@@ -1,3 +1,4 @@
 *.dmg
 dmgbuild/
 dmgroot/
+.DS_Store

@@ -116,7 +116,57 @@ for helper_app in "$HELPERS_DIR"/*.app; do
     fi
 done
 
-# 5. SIGN SIGMA FRAMEWORK
+# 5. SIGN SPARKLE FRAMEWORK COMPONENTS
+echo ""
+echo "⚡ SIGNING SPARKLE FRAMEWORK..."
+SPARKLE_PATH="$VERSION_PATH/Frameworks/Sparkle.framework"
+
+if [ -d "$SPARKLE_PATH" ]; then
+    # Sign Sparkle XPC Services
+    if [ -d "$SPARKLE_PATH/Versions/B/XPCServices" ]; then
+        for xpc in "$SPARKLE_PATH/Versions/B/XPCServices"/*.xpc; do
+            if [ -d "$xpc" ]; then
+                xpc_name=$(basename "$xpc")
+                echo "  Signing XPC: $xpc_name"
+                
+                # Sign executable inside XPC
+                xpc_exec="$xpc/Contents/MacOS/$(basename "$xpc" .xpc)"
+                if [ -f "$xpc_exec" ]; then
+                    sign_binary "$xpc_exec"
+                fi
+                
+                # Sign entire XPC bundle
+                sign_binary "$xpc"
+            fi
+        done
+    fi
+    
+    # Sign Sparkle Updater.app
+    if [ -d "$SPARKLE_PATH/Versions/B/Updater.app" ]; then
+        echo "  Signing Updater.app"
+        updater_exec="$SPARKLE_PATH/Versions/B/Updater.app/Contents/MacOS/Updater"
+        if [ -f "$updater_exec" ]; then
+            sign_binary "$updater_exec"
+        fi
+        sign_binary "$SPARKLE_PATH/Versions/B/Updater.app"
+    fi
+    
+    # Sign Sparkle Autoupdate binary
+    if [ -f "$SPARKLE_PATH/Versions/B/Autoupdate" ]; then
+        sign_binary "$SPARKLE_PATH/Versions/B/Autoupdate"
+    fi
+    
+    # Sign main Sparkle binary
+    if [ -f "$SPARKLE_PATH/Versions/B/Sparkle" ]; then
+        sign_binary "$SPARKLE_PATH/Versions/B/Sparkle"
+    fi
+    
+    # Sign entire Sparkle Framework
+    sign_binary "$SPARKLE_PATH"
+    echo "  ✓ Sparkle Framework signed"
+fi
+
+# 6. SIGN SIGMA FRAMEWORK
 echo ""
 echo "📦 SIGNING SIGMA FRAMEWORK..."
 if [ -f "$VERSION_PATH/Sigma Framework" ]; then
@@ -126,19 +176,19 @@ fi
 # SIGN ENTIRE FRAMEWORK
 sign_binary "$FRAMEWORK_PATH" "com.sigmabrowser.SigmaFramework"
 
-# 6. SIGN LIBSIGMA_ADBLOCK_BRIDGE.DYLIB
+# 7. SIGN LIBSIGMA_ADBLOCK_BRIDGE.DYLIB
 echo ""
 echo "🛡️  SIGNING ADBLOCK BRIDGE..."
 if [ -f "$APP_PATH/Contents/Frameworks/libsigma_adblock_bridge.dylib" ]; then
     sign_binary "$APP_PATH/Contents/Frameworks/libsigma_adblock_bridge.dylib"
 fi
 
-# 7. SIGN MAIN EXECUTABLE FILE
+# 8. SIGN MAIN EXECUTABLE FILE
 echo ""
 echo "⚙️  SIGNING MAIN EXECUTABLE FILE..."
 sign_binary "$APP_PATH/Contents/MacOS/Sigma" "com.sigmabrowser.sigmabrowser"
 
-# 8. CREATE FILE ENTITLEMENTS FOR MAIN APPLICATION
+# 9. CREATE FILE ENTITLEMENTS FOR MAIN APPLICATION
 ENTITLEMENTS_FILE="/tmp/sigma_entitlements.plist"
 cat > "$ENTITLEMENTS_FILE" <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
@@ -167,7 +217,7 @@ cat > "$ENTITLEMENTS_FILE" <<EOF
 </plist>
 EOF
 
-# 9. SIGN ENTIRE APPLICATION
+# 10. SIGN ENTIRE APPLICATION
 echo ""
 echo "📱 SIGNING ENTIRE APPLICATION..."
 codesign --sign "$IDENTITY" \
@@ -182,7 +232,7 @@ echo "  ✓ SIGNED: Sigma.app"
 # DELETE TEMPORARY FILES
 rm -f "$ENTITLEMENTS_FILE" "$HELPER_ENTITLEMENTS_TEMP"
 
-# 10. CHECK SIGNATURE
+# 11. CHECK SIGNATURE
 echo ""
 echo "🔍 CHECKING SIGNATURE..."
 if codesign --verify --deep --strict --verbose=2 "$APP_PATH" 2>&1; then
