@@ -2,10 +2,23 @@
 set -euo pipefail
 
 APP_PATH=""        # -> path to Sigma.app (relative or absolute)
-BACKGROUND_IMG="/Users/nikitabogatyrev/dmg-craft/Content_Area_2.png"                    # -> background (recommended size: 600x400 or 2x for Retina)
-VOL_NAME="Sigma Installer"                                                              # name of the volume, will be displayed in /Volumes/
+BACKGROUND_IMG=""                    # -> background (recommended size: 600x400 or 2x for Retina)
+VOL_NAME="Sigma Installer2"                                                              # name of the volume, will be displayed in /Volumes/
 DMG_RW="sigma-temp.dmg"
 DMG_FINAL="Sigma.dmg"
+
+# cleanup artifacts from previous runs
+echo "Cleaning up artifacts from previous runs..."
+
+# unmount volume if it's still mounted
+if [ -d "/Volumes/$VOL_NAME" ]; then
+  echo "Unmounting /Volumes/$VOL_NAME..."
+  hdiutil detach "/Volumes/$VOL_NAME" 2>/dev/null || true
+fi
+
+# remove old DMG files
+[ -f "$DMG_RW" ] && rm -f "$DMG_RW" && echo "Removed old $DMG_RW"
+[ -f "$DMG_FINAL" ] && rm -f "$DMG_FINAL" && echo "Removed old $DMG_FINAL"
 
 # working directory
 WORKDIR="$(pwd)/dmgroot"
@@ -80,7 +93,8 @@ tell application "Finder"
 
     set vopts to the icon view options of container window
     set arrangement of vopts to not arranged
-    set icon size of vopts to 128
+    set icon size of vopts to 96
+    -- set text size of vopts to 10
     -- specify the background file (relative path in the volume)
     set background picture of vopts to file ".background:background.png"
 
@@ -88,10 +102,10 @@ tell application "Finder"
 
     -- Positioning: adjust the numbers {x, y}
     try
-      set position of item "Sigma.app" of it to {140, 200}
+      set position of item "Sigma.app" of it to {150, 200}
     end try
     try
-      set position of item "Applications" of it to {450, 200}
+      set position of item "Applications" of it to {445, 200}
     end try
     try
       set position of item "Sigma_Browser_text.png" of it to {140, 350}
@@ -102,6 +116,11 @@ tell application "Finder"
     try
       set position of item "arrow.png" of it to {500, 300}
     end try
+
+    -- set invisibleName to "‏" -- U+200F, RIGHT-TO-LEFT MARK
+    -- set invisibleName2 to "[U+201D]" -- U+200F, RIGHT-TO-LEFT MARK
+    -- set name of item "Sigma.app" to invisibleName
+    -- set name of item "Applications" to invisibleName2
 
     close
   end tell

@@ -7,7 +7,7 @@ set -e
 
 # ============ SETTINGS ============
 APP_PATH=""
-IDENTITY=""  # Developer ID Application
+IDENTITY="494F2BABFCB3A862B25BB157B6EF9C0E81968455"  # Developer ID Application
 
 # CHECK IF THE APPLICATION EXISTS
 if [ ! -d "$APP_PATH" ]; then
