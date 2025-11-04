@@ -1,9 +1,15 @@
-# 1) ./sign_app.sh
+# Script to run:
 
-# 2) ./make_dmg.sh
+./pipeline.sh
 
-# 3) codesign --force --sign '(identity)' --timestamp --identifier Sigma-(VERSION) Sigma.dmg
+# Or manually:
 
-# 4) xcrun notarytool submit Sigma.dmg --keychain-profile sigmabrowser-notary --wait
+1) ./sign_app.sh
 
-# 5) xcrun stapler staple Sigma.dmg
+2) ./make_dmg.sh
+
+3) codesign --force --sign '(identity)' --timestamp --identifier Sigma-(VERSION) Sigma.dmg
+
+4) xcrun notarytool submit Sigma.dmg --keychain-profile sigmabrowser-notary --wait
+
+5) xcrun stapler staple Sigma.dmg

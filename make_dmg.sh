@@ -1,9 +1,9 @@
 #!/bin/bash
 set -euo pipefail
 
-APP_PATH=""        # -> path to Sigma.app (relative or absolute)
-BACKGROUND_IMG=""                    # -> background (recommended size: 600x400 or 2x for Retina)
-VOL_NAME="Sigma Installer2"                                                              # name of the volume, will be displayed in /Volumes/
+APP_PATH="/Users/nikitabogatyrev/Sigma-AI-Browser/src/out/mac/Sigma.app"        # -> path to Sigma.app (relative or absolute)
+BACKGROUND_IMG="/Users/nikitabogatyrev/dmg-craft/Content_Area_7.png"                    # -> background (recommended size: 600x400 or 2x for Retina)
+VOL_NAME="Sigma Browser"                                                                # name of the volume, will be displayed in /Volumes/
 DMG_RW="sigma-temp.dmg"
 DMG_FINAL="Sigma.dmg"
 

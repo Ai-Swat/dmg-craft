@@ -6,7 +6,7 @@
 set -e
 
 # ============ SETTINGS ============
-APP_PATH=""
+APP_PATH="/Users/nikitabogatyrev/Sigma-AI-Browser/src/out/mac/Sigma.app"
 IDENTITY="494F2BABFCB3A862B25BB157B6EF9C0E81968455"  # Developer ID Application
 
 # CHECK IF THE APPLICATION EXISTS
@@ -45,7 +45,7 @@ sign_binary() {
 # 1. SIGN DYNAMIC LIBRARIES
 echo "📚 SIGNING LIBRARIES..."
 FRAMEWORK_PATH="$APP_PATH/Contents/Frameworks/Sigma Framework.framework"
-VERSION_PATH="$FRAMEWORK_PATH/Versions/136.0.7109.4"
+VERSION_PATH="$FRAMEWORK_PATH/Versions/141.0.7391.44"
 
 if [ -d "$VERSION_PATH/Libraries" ]; then
     for dylib in "$VERSION_PATH/Libraries"/*.dylib; do
@@ -213,6 +213,14 @@ cat > "$ENTITLEMENTS_FILE" <<EOF
     <true/>
     <key>com.apple.security.personal-information.location</key>
     <true/>
+	<key>com.apple.security.device.bluetooth</key>
+	<true/>
+	<key>com.apple.security.device.print</key>
+	<true/>
+	<key>com.apple.security.device.usb</key>
+	<true/>
+	<key>com.apple.security.personal-information.photos-library</key>
+	<true/>
 </dict>
 </plist>
 EOF
